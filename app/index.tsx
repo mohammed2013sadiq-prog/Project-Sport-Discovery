@@ -47,7 +47,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
 
       <View style={styles.header}>
-        <Image source={require("../../assets/images/Logo.png")} style={styles.logoImage} resizeMode="contain" />
+        <Image source={require("../assets/images/Logo.png")} style={styles.logoImage} resizeMode="contain" />
       </View>
 
       <Text style={styles.title}>Find your next passion 🔥</Text>
