@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,91 +7,114 @@ import {
   Image,
   TouchableOpacity,
   SafeAreaView,
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
-
-const sports = [
-  {
-    id: "1",
-    name: "FootBall",
-    image:
-      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800",
-    description: "The most popular team sport in the world",
-    category: "Collective",
-  },
-  {
-    id: "2",
-    name: "BasketBall",
-    image:
-      "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800",
-    description: "Fast and spectacular team sport",
-    category: "Collective",
-  },
-  {
-    id: "3",
-    name: "Tennis",
-    image:
-      "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800",
-    description: "Individual sport",
-    category: "Individual",
-  },
-];
+import { useRouter } from "expo-router";
+import axios from "axios";
+import { Sport } from "../services/api";
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const [sports, setSports] = useState<Sport[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  useEffect(() => {
+    const fetchSports = async () => {
+      try {
+        const response = await axios.get(
+          "https://6a1f5a8fb79eec0d6cf0ac70.mockapi.io/api/v1/Sports"
+        );
+        setSports(response.data);
+      } catch (error) {
+        console.error("Error fetching sports:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSports();
+  }, []);
+
+  const categories = ["All", ...Array.from(new Set(sports.map((s) => s.category).filter(Boolean)))];
+
+  const filteredSports = selectedCategory === "All"
+    ? sports
+    : sports.filter((s) => s.category === selectedCategory);
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+
       <View style={styles.header}>
-        <Text style={styles.logo}>Sport Discovery</Text>
+        <Image source={require("../../assets/images/Logo.png")} style={styles.logoImage} resizeMode="contain" />
       </View>
 
       <Text style={styles.title}>Find your next passion 🔥</Text>
 
-      {/* Filters */}
-      <View style={styles.filters}>
-        <TouchableOpacity style={[styles.filterBtn, styles.activeFilter]}>
-          <Text style={styles.activeText}>All</Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filterText}>Collective</Text>
-        </TouchableOpacity>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters}>
+        {categories.map((category) => (
+          <TouchableOpacity
+            key={category}
+            style={[
+              styles.filterBtn,
+              selectedCategory === category && styles.activeFilter,
+            ]}
+            onPress={() => setSelectedCategory(category as string)}
+          >
+            <Text
+              style={
+                selectedCategory === category
+                  ? styles.activeText
+                  : styles.filterText
+              }
+            >
+              {category}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filterText}>Individual</Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* Cards */}
-      <FlatList
-        data={sports}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.image} />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0e7490" style={{ marginTop: 50 }} />
+      ) : (
+        <FlatList
+          data={filteredSports}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <TouchableOpacity 
+              style={styles.card}
+              activeOpacity={0.9}
+              onPress={() => router.push({ pathname: "/details/[id]", params: { id: item.id } })}
+            >
+              <Image source={{ uri: item.image }} style={styles.image} />
 
-            <View style={styles.tag}>
-              <Text style={styles.tagText}>{item.name}</Text>
-            </View>
-
-            <TouchableOpacity style={styles.bookmark}>
-              <Text style={{ color: "#fff", fontSize: 20 }}>☆</Text>
-            </TouchableOpacity>
-
-            <View style={styles.content}>
-              <Text style={styles.description}>
-                {item.description}
-              </Text>
-
-              <View style={styles.category}>
-                <Text style={styles.categoryText}>
-                  {item.category}
-                </Text>
+              <View style={styles.tag}>
+                <Text style={styles.tagText}>{item.name}</Text>
               </View>
-            </View>
-          </View>
-        )}
-      />
+
+              <TouchableOpacity style={styles.bookmark}>
+                <Text style={{ color: "#fff", fontSize: 20 }}>☆</Text>
+              </TouchableOpacity>
+
+              <View style={styles.content}>
+                <Text style={styles.description} numberOfLines={2}>
+                  {item.description}
+                </Text>
+
+                <View style={styles.category}>
+                  <Text style={styles.categoryText}>
+                    {item.category || "Sport"}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -113,10 +136,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  logo: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#1f2937",
+  logoImage: {
+    width: 200,
+    height: 50,
   },
 
   title: {
