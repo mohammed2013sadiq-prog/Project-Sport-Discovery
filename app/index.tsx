@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import axios from "axios";
-import { Sport } from "../services/api";
+import { Sport } from "../src/services/api";
 
 export default function HomeScreen() {
   const router = useRouter();

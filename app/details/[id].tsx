@@ -11,7 +11,7 @@ import {
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
-import { SportDetail } from "../../services/api";
+import { SportDetail } from "../../src/services/api";
 
 export default function SportDetailsScreen() {
   const { id } = useLocalSearchParams();
