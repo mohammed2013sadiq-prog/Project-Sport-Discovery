@@ -22,3 +22,7 @@ export type SportDetail = {
   equipment?: string[];
 };
 
+export type SportGallery = {
+  id: string;
+  gallery?: string[];
+}
