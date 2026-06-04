@@ -1,3 +1,4 @@
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -44,7 +45,7 @@ export default function HomeScreen() {
     : sports.filter((s) => s.category === selectedCategory);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
 
       <View style={styles.header}>
         <Image source={require("../assets/images/Logo.png")} style={styles.logoImage} resizeMode="contain" />
@@ -115,7 +116,7 @@ export default function HomeScreen() {
           )}
         />
       )}
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
