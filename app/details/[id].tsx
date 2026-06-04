@@ -1,3 +1,4 @@
+import { useBookmarkStore } from "../../src/store/useBookmarkStore";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -14,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { SportDetail } from "../../src/services/api";
 
 export default function SportDetailsScreen() {
+  const { bookmarkedIds, toggleBookmark } = useBookmarkStore();
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [sport, setSport] = useState<SportDetail | null>(null);
@@ -68,8 +70,8 @@ export default function SportDetailsScreen() {
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.bookmarkButton}>
-            <Ionicons name="star-outline" size={24} color="#fff" />
+          <TouchableOpacity style={styles.bookmarkButton} onPress={()=>toggleBookmark(id as string)}>
+            <Ionicons name={bookmarkedIds.includes(id as string) ? "star" : "star-outline"} size={24} color="#fff" />
           </TouchableOpacity>
 
           <View style={styles.floatingCard}>
@@ -142,7 +144,10 @@ export default function SportDetailsScreen() {
       </ScrollView>
 
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.galleryButton}>
+        <TouchableOpacity 
+          style={styles.galleryButton}
+          onPress={() => router.push({ pathname: '/gallery/gallery' as any, params: { id } })}
+        >
           <Ionicons name="images-outline" size={24} color="#fff" style={{ marginRight: 10 }} />
           <Text style={styles.galleryButtonText}>Open Photo Gallery</Text>
         </TouchableOpacity>

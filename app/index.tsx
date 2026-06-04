@@ -1,3 +1,4 @@
+import { useBookmarkStore } from "../src/store/useBookmarkStore";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from "react";
 import {
@@ -17,6 +18,7 @@ import { Sport } from "../src/services/api";
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { bookmarkedIds, toggleBookmark } = useBookmarkStore();
   const [sports, setSports] = useState<Sport[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -97,8 +99,9 @@ export default function HomeScreen() {
                 <Text style={styles.tagText}>{item.name}</Text>
               </View>
 
-              <TouchableOpacity style={styles.bookmark}>
-                <Text style={{ color: "#fff", fontSize: 20 }}>☆</Text>
+              <TouchableOpacity style={styles.bookmark}
+              onPress={()=>toggleBookmark(item.id)}>
+                <Text style={{ color: "#fff", fontSize: 20 }}>{bookmarkedIds.includes(item.id) ? "★" : "☆"}</Text>
               </TouchableOpacity>
 
               <View style={styles.content}>
