@@ -8,7 +8,6 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  SafeAreaView,
   ActivityIndicator,
   ScrollView,
 } from "react-native";
@@ -84,6 +83,7 @@ export default function HomeScreen() {
         <ActivityIndicator size="large" color="#0e7490" style={{ marginTop: 50 }} />
       ) : (
         <FlatList
+          style={{ flex: 1 }}
           data={filteredSports}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
@@ -152,7 +152,8 @@ const styles = StyleSheet.create({
   },
 
   filters: {
-    flexDirection: "row",
+    flexGrow: 0,
+    flexShrink: 0,
     marginBottom: 20,
   },
 
