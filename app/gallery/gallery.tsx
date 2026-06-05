@@ -68,17 +68,16 @@ export default function GalleryScreen() {
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={[styles.imageWrapper, { width, height }]}>
-            {/* Blurred Background */}
+            
             <Image
               source={{ uri: item }}
               style={StyleSheet.absoluteFill}
               resizeMode="cover"
               blurRadius={50}
             />
-            {/* Dark Overlay for better contrast */}
+            
             <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
             
-            {/* Main Image */}
             <Image 
               source={{ uri: item }} 
               style={styles.image} 
