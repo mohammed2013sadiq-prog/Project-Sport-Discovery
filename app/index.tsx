@@ -1,19 +1,20 @@
-import { useBookmarkStore } from "../src/store/useBookmarkStore";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
+  ActivityIndicator,
   FlatList,
   Image,
-  TouchableOpacity,
-  ActivityIndicator,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import axios from "axios";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Svg, { G, Path } from "react-native-svg";
 import { Sport } from "../src/services/api";
+import { useBookmarkStore } from "../src/store/useBookmarkStore";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -88,7 +89,7 @@ export default function HomeScreen() {
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.card}
               activeOpacity={0.9}
               onPress={() => router.push({ pathname: "/details/[id]", params: { id: item.id } })}
@@ -99,9 +100,15 @@ export default function HomeScreen() {
                 <Text style={styles.tagText}>{item.name}</Text>
               </View>
 
-              <TouchableOpacity style={styles.bookmark}
-              onPress={()=>toggleBookmark(item.id)}>
-                <Text style={{ color: "#fff", fontSize: 20 }}>{bookmarkedIds.includes(item.id) ? "★" : "☆"}</Text>
+              <TouchableOpacity style={styles.bookmark} onPress={() => toggleBookmark(item.id)}>
+                <View style={StyleSheet.absoluteFill}>
+                  <Svg width="36" height="88" viewBox="0 0 36 88">
+                    <G transform="translate(0, 88) scale(0.1, -0.1)" fill="#FF0000" stroke="none">
+                      <Path d="M0 443 l0 -436 85 124 c47 68 89 125 94 127 4 1 45 -54 91 -123 45 -69 84 -125 86 -125 2 0 4 196 4 435 l0 435 -180 0 -180 0 0 -437z" />
+                    </G>
+                  </Svg>
+                </View>
+                <Text style={styles.bookmarkStar}>{bookmarkedIds.includes(item.id) ? "★" : "☆"}</Text>
               </TouchableOpacity>
 
               <View style={styles.content}>
@@ -210,12 +217,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: 15,
-    backgroundColor: "red",
-    paddingHorizontal: 10,
-    paddingTop: 10,
-    paddingBottom: 20,
-    borderBottomLeftRadius: 6,
-    borderBottomRightRadius: 6,
+    width: 36,
+    height: 88,
+    alignItems: 'center',
+  },
+  
+  bookmarkStar: {
+    color: "#fff",
+    fontSize: 20,
+    marginTop: 8,
+    zIndex: 1,
   },
 
   content: {
